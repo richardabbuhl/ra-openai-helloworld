@@ -45,7 +45,7 @@ public class BandController {
         return outputParser.parse(generation.getOutput().getContent());
     }
 
-    @GetMapping("/ai/bandname")
+    @GetMapping("/ai/bandname2")
     public BandInfo generate2(@RequestParam(value = "genre", defaultValue = "Rock") String genre,
                               @RequestParam(value = "description", defaultValue = "cool") String description) {
         var outputParser = new BeanOutputParser<>(BandInfo.class);
