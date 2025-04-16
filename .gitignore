@@ -30,6 +30,8 @@ core
 *.iml
 ### IntelliJ IDEA ###
 .idea
+build/
+.gradle
 *.iws
 *.ipr
 */*.iml
