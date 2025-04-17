@@ -1,0 +1,54 @@
+[
+  {
+    "name": "Lady Gaga",
+    "genre": "Pop"
+  },
+  {
+    "name": "Green Day",
+    "genre": "Punk Rock"
+  },
+  {
+    "name": "Post Malone",
+    "genre": "Rap, Rock, Country"
+  },
+  {
+    "name": "Missy Elliott",
+    "genre": "Hip Hop"
+  },
+  {
+    "name": "Travis Scott",
+    "genre": "Hip Hop"
+  },
+  {
+    "name": "Ed Sheeran",
+    "genre": "Pop"
+  },
+  {
+    "name": "Weezer",
+    "genre": "Alternative Rock"
+  },
+  {
+    "name": "Benson Boone",
+    "genre": "Pop"
+  },
+  {
+    "name": "Beabadoobee",
+    "genre": "Indie Rock"
+  },
+  {
+    "name": "Shaboozey",
+    "genre": "Country-Trap"
+  },
+  {
+    "name": "The Marías",
+    "genre": "Dream Pop"
+  },
+  {
+    "name": "DJ Pee .Wee (aka Anderson .Paak)",
+    "genre": "Soul, Funk"
+  },
+  {
+    "name": "XG",
+    "genre": "K-Pop"
+  }
+]

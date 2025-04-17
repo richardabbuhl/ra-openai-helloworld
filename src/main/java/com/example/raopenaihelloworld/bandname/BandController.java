@@ -7,12 +7,17 @@ import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.ai.document.Document;
 import org.springframework.ai.parser.BeanOutputParser;
+import org.springframework.ai.reader.JsonReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -20,6 +25,12 @@ import java.util.Map;
 public class BandController {
 
     private static final Logger logger = LoggerFactory.getLogger(BandController.class);
+
+    @Value("classpath:/data/bandnames.json")
+    private Resource bandNames;
+
+    @Value("classpath:/data/excludedbandnames.json")
+    private Resource exBandNames;
 
     private final ChatClient chatClient;
 
@@ -35,7 +46,7 @@ public class BandController {
         String format = outputParser.getFormat();
         logger.info("format: {}", format);
         String userMessage = """
-                Please generate a cool band name for the genre {genre} which is {description}
+                Please generate a brand new unique band name for the genre {genre} which is {description}
                 {format}
                 """;
         PromptTemplate promptTemplate = new PromptTemplate(userMessage, Map.of("genre", genre, "description", description, "format", format));
@@ -51,27 +62,40 @@ public class BandController {
         var outputParser = new BeanOutputParser<>(BandInfo.class);
 
         // Simulate retrieval of relevant data (replace with actual retrieval logic)
-        String retrievedData = retrieveRelevantData();
+        String retrievedBandNames = retrieveBandNames();
+        String excludedBandNames = excludedBandNames();
 
         String format = outputParser.getFormat();
         logger.info("format: {}", format);
         String userMessage = """
                 Please generate a cool band name for the genre {genre} which is {description}.
                 Use the following additional context to improve the results:
-                {retrievedData}
+                Here are examples of good band name {retrievedBandNames}
+                Exclude these band names {excludedBandNames} from the list 
                 {format}
                 """;
         PromptTemplate promptTemplate = new PromptTemplate(userMessage,
-                Map.of("genre", genre, "description", description, "retrievedData", retrievedData, "format", format));
+                Map.of("genre", genre, "description", description, "retrievedBandNames", retrievedBandNames, "excludedBandNames", excludedBandNames, "format", format));
         Prompt prompt = promptTemplate.create();
+        logger.info("Prompt: {}", prompt);
         Generation generation = chatClient.call(prompt).getResult();
 
         return outputParser.parse(generation.getOutput().getContent());
     }
 
     // Example retrieval method (replace with actual implementation)
-    private String retrieveRelevantData() {
-        // Simulate retrieval logic (e.g., query a database or vector store)
-        return "Popular bands in this genre include XYZ. The genre is known for ABC characteristics.";
+    private String retrieveBandNames() {
+        JsonReader jsonReader = new JsonReader(bandNames, "name", "genre");
+        List<Document> documents = jsonReader.get();
+        logger.info("Loaded {} JSON as Documents", bandNames.getFilename());
+        return documents.toString();
+    }
+
+    // Example retrieval method (replace with actual implementation)
+    private String excludedBandNames() {
+        JsonReader jsonReader = new JsonReader(exBandNames, "name", "genre");
+        List<Document> documents = jsonReader.get();
+        logger.info("Loaded {} JSON as Documents", exBandNames.getFilename());
+        return documents.toString();
     }
 }
